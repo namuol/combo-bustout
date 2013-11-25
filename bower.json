@@ -1,0 +1,10 @@
+{
+  "name": "breakout",
+  "private": true,
+  "dependencies": {
+    "almond": "~0.2.6",
+    "requirejs": "~2.1.9",
+    "require-cs": "git@github.com:Jovianware/require-cs.git#0.4.5",
+    "combo": "git@github.com:namuol/combo.js.git"
+  }
+}

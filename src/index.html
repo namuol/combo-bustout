@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Breakout</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
+
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background: #444;
+        overflow: hidden;
+      }
+
+      #pleasewait {
+        color: white;
+        font-family: Helvetica, sans-serif;
+        font-size: 32px;
+        height: 100%;
+        width: 100%;
+        text-align: center;
+      }
+
+      #container {
+        display: none;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        padding: 0;
+        text-align: center;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div id='container'></div>
+    <div id='pleasewait'>Please Wait...</div>
+  </body>
+
+  <script type='text/javascript'>
+    'use strict';
+    var head = document.getElementsByTagName('head')[0],
+        script = document.createElement('script'),
+        debug;
+
+    script.type = 'text/javascript';
+
+    function getParameterByName (name) {
+      var name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]'),
+          regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+          results = regex.exec(location.search);
+      return results == null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    try {
+      debug = JSON.parse(getParameterByName('debug'));
+    } catch (e) {
+      debug = false;
+    }
+
+    if (debug) {
+      script.src = 'support/requirejs/require.js';
+      script.setAttribute('data-main', 'devWrapper');
+    } else {
+      script.src = 'main-built.js';
+    }
+
+    head.appendChild(script);
+  </script>
+
+</html>
