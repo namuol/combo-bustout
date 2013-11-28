@@ -1,4 +1,5 @@
 define ->
+
   CanBeCentered =
     center: ->
       @pivotX = @width/2
@@ -129,14 +130,12 @@ define ->
   COLUMNS = 12
   ROWS = 8
 
-  class Breakout extends cg.Scene
+  class MainGame extends cg.Scene
     constructor: ->
       super
-      cg.log 'Combo game initialized!'
       cg.input.on 'keyDown:space', ->
         cg.timeScale = if cg.timeScale is 1 then 0.1 else 1
-    preloadComplete: ->
-      super
+
       @paddle = @addChild new Paddle
       @ball = @addChild new Ball
       @bricks = []
@@ -172,5 +171,31 @@ define ->
         @ball.hit()
         @paddle.hit()
         console.log 'bounce!'
+
+  class Breakout extends cg.Scene
+    assets:
+      textures:
+        logo: 'assets/logo.png'
+    constructor: ->
+      super
+      cg.log 'Combo game initialized!'
+      @loadingScreen = new cg.extras.LoadingScreen
+      @loadingScreen.begin()
+
+    preloadProgress: (src, data, loaded, count) ->
+      super
+      @loadingScreen.setProgress loaded/count
+
+    preloadComplete: ->
+      super
+      @splashScreen = @addChild new cg.extras.SplashScreen.Simple 'logo'
+
+      @loadingScreen.complete().then =>
+        @loadingScreen.destroy()
+        @splashScreen.splashIn()
+
+      @once @splashScreen, 'done', ->
+        @splashScreen.destroy()
+        @main = @addChild new MainGame
 
   return Breakout

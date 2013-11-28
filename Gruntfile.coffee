@@ -1,5 +1,5 @@
 PORT = process.env.PORT ? 9042
-
+HOSTNAME = process.env.HOSTNAME ? '0.0.0.0'
 module.exports = (grunt) ->
   config =
     pkg: grunt.file.readJSON 'package.json'
@@ -27,12 +27,12 @@ module.exports = (grunt) ->
           base: 'src'
           directory: 'src'
           keepalive: true
-
+          hostname: HOSTNAME
     open:
       dev:
-        path: "http://127.0.0.1:#{PORT}/?debug=1"
+        path: "http://#{HOSTNAME}:#{PORT}/?debug=1"
       prod:
-        path: "http://127.0.0.1:#{PORT}/"
+        path: "http://#{HOSTNAME}:#{PORT}/"
 
   grunt.initConfig config
 
