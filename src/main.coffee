@@ -10,6 +10,7 @@ define [
       name: 'Breakout'
       container: 'container'
       forceCanvas: !!parseInt(cg.env.getParameterByName('forceCanvas'))
+      usetiles: cg.env.getParameterByName('usetiles')?
       backgroundColor: 0x333333
 
     window.app = cg.stage.addChild new Breakout
