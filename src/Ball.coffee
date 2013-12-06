@@ -17,17 +17,11 @@ define [
       @physical = true
       @body.bounce = 1
       @body.friction = 0
-      @body.gravityScale = 0
-      @speed = 150
+      @speed = 200
 
       @body.left = cg.width/2 - @width/2
       @body.bottom = cg.height - 100
       @center()
-
-      @delay 2000, ->
-        @body.v.x = 50
-        @body.v.y = 200
-        @physical = true
 
     hit: ->
       @scale = 2
@@ -37,14 +31,20 @@ define [
           scale: 1
         easeFunc: 'elastic.out'
 
+    kill: ->
+      @emit 'kill'
+      @destroy()
+
     update: ->
       super
-      if cg.classes.brick
-        for brick,i in cg.classes.brick
-          if cg.physics.collide @body, brick.body
-            collided = true
-            @hit()
-            brick.kill()
+      for brick,i in cg('brick')
+        if cg.physics.collide @body, brick.body
+          collided = true
+          @hit()
+          brick.kill()
 
       # Force the ball to move at a constant speed at all times:
       @body.v.$norm().$mul(@speed)
+
+      if @body.top > cg.height
+        @kill()

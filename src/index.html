@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Breakout</title>
+    <title>Breakout — Combo</title>
     <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1' />
 
     <style>
@@ -10,34 +10,53 @@
         height: 100%;
         margin: 0;
         padding: 0;
-        background: #444;
+        background: #222;
         overflow: hidden;
       }
 
+
+      #container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: none;
+        width: 320px;
+        height: 416px;
+        margin: auto;
+        padding: 0;
+        text-align: center;
+        display: none;
+      }
+
       #pleasewait {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
         color: white;
-        font-family: Helvetica, sans-serif;
-        font-size: 32px;
-        height: 100%;
-        width: 100%;
+        font-family: sans-serif;
+        font-size: 20px;
+        height: 1em;
+        margin: auto;
+        padding: 0;
         text-align: center;
       }
 
-      #container {
-        display: none;
-        width: 100%;
-        height: 100%;
-        margin: 0 auto;
-        padding: 0;
-        text-align: center;
+      canvas {
+        position: relative;
       }
     </style>
 
   </head>
 
   <body>
-    <div id='container'></div>
     <div id='pleasewait'>Please Wait...</div>
+    <div id='container'>
+    </div>
+
   </body>
 
   <script type='text/javascript'>

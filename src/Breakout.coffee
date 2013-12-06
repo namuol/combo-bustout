@@ -1,9 +1,11 @@
 define [
   'cs!combo/cg'
   'cs!MainGame'
+  'cs!SplashScreen'
 ], (
   cg
   MainGame
+  SplashScreen
 )->
 
   class Breakout extends cg.Scene
@@ -25,12 +27,15 @@ define [
         left: 16
         right: cg.width - 16
         top: 16
-        bottom: cg.height
+        bottom: false
 
       super
-      cg.log 'Combo game initialized!'
       @loadingScreen = new cg.extras.LoadingScreen
+
       @loadingScreen.begin()
+
+      cg.Text.defaults.color = 'black'
+      cg.Text.defaults.font = '14pt sans-serif'
 
     preloadProgress: (src, data, loaded, count) ->
       super
@@ -38,16 +43,17 @@ define [
 
     preloadComplete: ->
       super
-      @splashScreen = @addChild new cg.extras.SplashScreen.Simple 'logo'
+      @bg = @addChild new cg.SpriteActor texture: 'bg_prerendered'
 
       @loadingScreen.complete().then =>
         @loadingScreen.destroy()
-        @splashScreen.splashIn()
 
-      @once @splashScreen, 'done', ->
-        cg.log cg.assets
-        @splashScreen.destroy()
-        @bg = @addChild new cg.SpriteActor texture: 'bg_prerendered'
-        @main = @addChild new MainGame
+        @addChild new MainGame
+          id: 'main'
+          visible: false
+          paused: true
+
+        @addChild new SplashScreen
+          id: 'splashscreen'
 
   return Breakout

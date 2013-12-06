@@ -17,13 +17,13 @@ define [
       @body.bounce = 1
       @body.friction = 0
       @body.mass = 0
-      @body.gravityScale = 0
       @center()
       @width = @texture.width
       @height = @texture.height
 
     kill: ->
       @texture = @deadTexture
+      @emit 'kill'
       @delay 0, ->
         @removeClass 'brick'
         @tween

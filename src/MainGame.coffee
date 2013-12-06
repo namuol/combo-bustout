@@ -3,11 +3,13 @@ define [
   'cs!Brick'
   'cs!Paddle'
   'cs!Ball'
+  'cs!Power'
 ], (
   cg
   Brick
   Paddle
   Ball
+  Power
 ) ->
 
   levels = [
@@ -73,15 +75,74 @@ define [
       super
 
       @paddle = @addChild new Paddle
-      @ball = @addChild new Ball
+      @countDown = @addChild new cg.SpriteActor
+        anim: cg.assets.sheets.numbers.anim [2,1,0], 1000, false
+        anchorX: 0.5
+        anchorY: 0.5
+        x: cg.width/2
+        y: 250
 
-      @loadLevel 0
+      @livesText = @addChild new cg.Text 'lives: 3',
+        align: 'left'
+        x: 18
+        y: cg.height-32
 
-    loadLevel: (levelNum) ->
-      level = levels[levelNum]
+      @scoreText = @addChild new cg.Text 'score: 0',
+        align: 'left'
+        x: 120
+        y: cg.height-32
+
+      @levelText = @addChild new cg.Text 'level: 1',
+        align: 'left'
+        x: 243
+        y: cg.height-32
+
+      @__lives = 3
+      Object.defineProperty @, 'lives',
+        get: -> @__lives
+        set: (val) ->
+          @__lives = val
+          @livesText.string = 'lives: ' + val
+          @livesText.scale = 1.2
+          @livesText.tween values: scale: 1
+
+      @__score = 0
+      Object.defineProperty @, 'score',
+        get: -> @__score
+        set: (val) ->
+          @__score = val
+          @scoreText.string = 'score: ' + val
+          @scoreText.scale = 1.2
+          @scoreText.tween values: scale: 1
+
+      @__levelNum = 0
+      Object.defineProperty @, 'levelNum',
+        get: -> @__levelNum
+        set: (val) ->
+          @__levelNum = val
+          @levelText.string = 'level: ' + val
+          @levelText.scale = 1.2
+          @levelText.tween values: scale: 1
+
+      @countDown.on @countDown.anim, 'end', -> @hide()
+
+      cg.physics.gravity.zero()
+
+    loadLevel: (@levelNum) ->
+      level = levels[@levelNum]
+      if not level
+        @pause()
+        @hide()
+        cg('#splashscreen').setText('You Win!').resume().show()
+        return
+
+      # Clear powerups:
+      cg('powerup powerdown').destroy()
 
       # Clear the bricks:
-      cg.classes.brick?.destroy()
+      cg('brick').destroy()
+
+      # Load the bricks:
       for row,y in level.bricks.split '\n'
         for letter,x in row
           continue  if letter is ' '
@@ -91,21 +152,59 @@ define [
             texture: cg.assets.sheets.bricks[brickColors[letter]]
             deadTexture: cg.assets.sheets.bricks[brickColors[letter] + 4]
 
-      cg.classes.brick.set 'scale', 0
-      cg.classes.brick.tween
+      toChooseFrom = cg.Group.create cg('brick')
+      for num in [0..level.powerUps]
+        chosenBrick = cg.rand.pick toChooseFrom
+        @addChild new Power.Up chosenBrick
+        toChooseFrom.remove chosenBrick
+
+      for num in [0..level.powerDowns]
+        chosenBrick = cg.rand.pick toChooseFrom
+        @addChild new Power.Down chosenBrick
+        toChooseFrom.remove chosenBrick
+
+      cg('brick').set 'scale', 0
+      cg('brick').tween
         values: scale: 1
         duration: 500
         delay: (num) -> num*8 + cg.rand 60
         easeFunc: 'elastic.out'
 
+      cg('brick').on 'kill', =>
+        @score += 100
+        if cg('brick').length is 1
+          @delay 500, -> @loadLevel @levelNum + 1
+
+      cg('ball')?.destroy()
+      @countDown.show()
+      @countDown.anim.rewind()
+      @addBall()
+
+    addBall: ->
+      ball = @addChild new Ball
+      ball.x = cg.width/2 - 50
+      ball.y = cg.height/2
+      @on ball, 'kill', ->
+        if cg('ball').length is 1
+          @addBall()
+          if --@lives is 0
+            @pause()
+            @hide()
+            cg('#splashscreen').setText('Game Over!').resume().show()
+
+      @delay 3000, ->
+        ball.body.v.x = 50
+        ball.body.v.y = 100
+
     update: ->
       super
 
       # We use `touches` instead of `cg.physics.collide` for artificial control of the bounce:
-      if @ball.touches @paddle
-        @ball.body.v.y *= -1
-        @ball.body.v.x = ((@ball.x - @paddle.x) / @paddle.width) * 300
-        @ball.body.bottom = @paddle.body.top
-        @ball.hit()
-        @paddle.hit()
-        console.log 'bounce!'
+      do (paddle=@paddle) ->
+        cg('ball').each ->
+          return  unless @touches paddle
+          @body.v.y *= -1
+          @body.v.x = ((@x - paddle.x) / paddle.width) * 300
+          @body.bottom = paddle.body.top
+          @hit()
+          paddle.hit()
