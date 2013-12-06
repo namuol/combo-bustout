@@ -19,6 +19,12 @@ define [
         paddle:   ['assets/paddle.png', 48, 16]
         bricks:   ['assets/bricks.png', 32, 16]
         ball:     ['assets/ball.png', 16,16]
+      sounds:
+        brickDeath: ['brickDeath.ogg','brickDeath.mp3','brickDeath.m4a']
+        countdownBlip: ['countdownBlip.ogg','countdownBlip.mp3','countdownBlip.m4a']
+        powerdown: ['powerdown.ogg','powerdown.mp3','powerdown.m4a']
+        powerup: ['powerup.ogg','powerup.mp3','powerup.m4a']
+        recover: ['recover.ogg','recover.mp3','recover.m4a']
 
     constructor: ->
       cg.width = 320
