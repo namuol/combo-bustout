@@ -20,11 +20,11 @@ define [
         bricks:   ['assets/bricks.png', 32, 16]
         ball:     ['assets/ball.png', 16,16]
       sounds:
-        brickDeath: ['brickDeath.ogg','brickDeath.mp3','brickDeath.m4a']
-        countdownBlip: ['countdownBlip.ogg','countdownBlip.mp3','countdownBlip.m4a']
-        powerdown: ['powerdown.ogg','powerdown.mp3','powerdown.m4a']
-        powerup: ['powerup.ogg','powerup.mp3','powerup.m4a']
-        recover: ['recover.ogg','recover.mp3','recover.m4a']
+        brickDeath: ['assets/brickDeath.ogg','assets/brickDeath.mp3','assets/brickDeath.m4a']
+        countdownBlip: ['assets/countdownBlip.ogg','assets/countdownBlip.mp3','assets/countdownBlip.m4a']
+        powerdown: ['assets/powerdown.ogg','assets/powerdown.mp3','assets/powerdown.m4a']
+        powerup: ['assets/powerup.ogg','assets/powerup.mp3','assets/powerup.m4a']
+        recover: ['assets/recover.ogg','assets/recover.mp3','assets/recover.m4a']
 
     constructor: ->
       cg.width = 320

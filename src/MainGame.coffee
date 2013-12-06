@@ -83,18 +83,24 @@ define [
         y: 250
 
       @livesText = @addChild new cg.Text 'lives: 3',
-        align: 'left'
-        x: 18
+        align: 'center'
+        anchorX: 0.5
+        anchorY: 0.5
+        x: 58
         y: cg.height-32
 
       @scoreText = @addChild new cg.Text 'score: 0',
-        align: 'left'
-        x: 120
+        align: 'center'
+        anchorX: 0.5
+        anchorY: 0.5
+        x: 150
         y: cg.height-32
 
       @levelText = @addChild new cg.Text 'level: 1',
-        align: 'left'
-        x: 243
+        align: 'center'
+        anchorX: 0.5
+        anchorY: 0.5
+        x: 260
         y: cg.height-32
 
       @__lives = 3
@@ -120,15 +126,26 @@ define [
         get: -> @__levelNum
         set: (val) ->
           @__levelNum = val
-          @levelText.string = 'level: ' + val
+          @levelText.string = 'level: ' + (val + 1)
           @levelText.scale = 1.2
           @levelText.tween values: scale: 1
 
       @countDown.on @countDown.anim, 'end', -> @hide()
+      @countDown.on @countDown.anim, 'newFrame', -> cg.assets.sounds.countdownBlip.play()
 
       cg.physics.gravity.zero()
 
+      @on cg.input, 'keyDown:left', ->
+        lvl = cg.math.mod(@levelNum - 1, 4)
+        @loadLevel(lvl)
+
+      @on cg.input, 'keyDown:right', ->
+        lvl = cg.math.mod(@levelNum + 1, 4)
+        @loadLevel(lvl)
+
     loadLevel: (@levelNum) ->
+      cg('paddle').each -> @unshrink()
+
       level = levels[@levelNum]
       if not level
         @pause()
@@ -173,17 +190,22 @@ define [
       cg('brick').on 'kill', =>
         @score += 100
         if cg('brick').length is 1
-          @delay 500, -> @loadLevel @levelNum + 1
+          @delay 1000, -> @loadLevel @levelNum + 1
 
       cg('ball')?.destroy()
       @countDown.show()
       @countDown.anim.rewind()
+      cg.assets.sounds.countdownBlip.play()
       @addBall()
 
     addBall: ->
       ball = @addChild new Ball
       ball.x = cg.width/2 - 50
       ball.y = cg.height/2
+      ball.scale = 0
+      ball.tween
+        values: scale: 1
+        easeFunc: 'elastic.out'
       @on ball, 'kill', ->
         if cg('ball').length is 1
           @addBall()

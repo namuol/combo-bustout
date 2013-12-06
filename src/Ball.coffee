@@ -41,6 +41,7 @@ define [
         if cg.physics.collide @body, brick.body
           collided = true
           @hit()
+          cg.assets.sounds.brickDeath.play()
           brick.kill()
 
       # Force the ball to move at a constant speed at all times:

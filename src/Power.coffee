@@ -40,6 +40,7 @@ define [
       super
 
     activate: ->
+      cg.assets.sounds.powerup.play()
       cg('#main').addBall()
 
   class Down extends Power
@@ -49,9 +50,13 @@ define [
       super
 
     activate: ->
+      cg.assets.sounds.powerdown.play()
       cg('paddle').each ->
         @shrink()
-        @delay 10000, ->
+
+      @delay 10000, ->
+        cg.assets.sounds.recover.play()
+        cg('paddle').each ->
           @unshrink()
 
   return {
