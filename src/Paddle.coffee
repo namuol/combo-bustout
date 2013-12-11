@@ -1,13 +1,16 @@
 define [
   'cs!combo/cg'
+  'cs!combo/physics/Physical'
   'cs!CanBeCentered'
 ], (
   cg
+  Physical
   CanBeCentered
 ) ->
 
   class Paddle extends cg.SpriteActor
     @mixin CanBeCentered
+    @plugin Physical
     constructor: (params={}) ->
       [@normal, @small] = cg.assets.sheets.paddle
       @small.width = 32

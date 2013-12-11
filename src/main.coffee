@@ -1,11 +1,14 @@
 define [
   'cs!combo/cg'
+  'cs!combo/physics/Physics'
   'cs!Breakout'
 ], (
   cg
+  Physics
   Breakout
 ) ->
   return ->
+    cg.plugin Physics
     cg.init
       name: 'Breakout'
       container: 'container'

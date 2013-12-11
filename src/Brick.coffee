@@ -1,13 +1,16 @@
 define [
   'cs!combo/cg'
+  'cs!combo/physics/Physical'
   'cs!CanBeCentered'
 ], (
   cg
+  Physical
   CanBeCentered
 ) ->
 
   class Brick extends cg.SpriteActor
     @mixin CanBeCentered
+    @plugin Physical
     constructor: ->
       super
 

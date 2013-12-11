@@ -1,13 +1,16 @@
 define [
   'cs!combo/cg'
+  'cs!combo/physics/Physical'
   'cs!CanBeCentered'
 ], (
   cg
+  Physical
   CanBeCentered
 ) ->
 
   class Ball extends cg.SpriteActor
     @mixin CanBeCentered
+    @plugin Physical
     constructor: ->
       @anim = new cg.Animation cg.assets.sheets.ball, 40
       super
